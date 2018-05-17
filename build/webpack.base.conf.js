@@ -1,13 +1,10 @@
-
 // Системные модули
 const path = require('path');
 
-// Файлы конфигурации
-const config = require('./config');
-var pages = require('./pages');
-// console.log(pages.pageNames);
+// Файлы конфигурации соблюдать очередность
+const pageslist = require('./pages'); // 1
+const config = require('./config'); // 2
 
-pages = 'index.js'
 // plugins
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
@@ -16,7 +13,10 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
 	context: config.rootPath,
-	entry: config.entries,
+	entry: {
+		index: pageslist.entries[0],
+		search: pageslist.entries[1]
+	},
 
 	output: {
 		path: path.resolve(config.rootPath, 'dist'),
@@ -24,18 +24,23 @@ module.exports = {
 		publicPath: ''
 	},
 
+	optimization: {
+		splitChunks: {
+			cacheGroups: {
+				commons: {
+					name: "commons",
+					chunks: "initial",
+					minChunks: 2
+				}
+			}
+		}
+	},
+
 	plugins: [
 
 		new CleanWebpackPlugin([path.resolve(config.rootPath, 'dist/*')], {
 			verbose: true,
 			root: config.rootPath
-		}),
-
-		new HtmlWebpackPlugin({
-			title: `${config.pageNames[0]}`,
-			filename: path.resolve(config.rootPath, 'dist', pages),
-			inject: true
-			// hash: true
 		}),
 
 		new FriendlyErrorsWebpackPlugin({
@@ -52,7 +57,7 @@ module.exports = {
 			}
 		})
 
-	],
+	].concat(pageslist.pages),
 	// Вывод событий Webpack
 	stats: {
 		children: false,

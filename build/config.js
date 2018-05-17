@@ -2,17 +2,17 @@
 // Системные модули
 const path = require('path');
 const userSeetings = require('./user.seetings.js');
-const pages = require('./pages.js');
-
 // Путь к корню проекта
 const rootPath = path.resolve(__dirname, '..');
 
-
 // Обьект конфигурации
-const config = {
-	rootPath : path.resolve(__dirname, '..'),
-	entries : entries ,
-	userSeetings : userSeetings
-}
 
-module.exports = config;
+console.log(rootPath);
+let config =
+
+module.exports = {
+	rootPath : rootPath,
+	// entries : entries ,
+	userSeetings : userSeetings,
+	'123': '123'
+}
