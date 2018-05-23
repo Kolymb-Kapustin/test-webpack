@@ -8,11 +8,8 @@ const rootPath = path.resolve(__dirname, '..');
 // Обьект конфигурации
 
 console.log(rootPath);
-let config =
 
 module.exports = {
 	rootPath : rootPath,
-	// entries : entries ,
-	userSeetings : userSeetings,
-	'123': '123'
+	userSeetings : userSeetings
 }

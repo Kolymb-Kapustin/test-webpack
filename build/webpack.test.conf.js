@@ -1,9 +1,12 @@
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
-const buildConfig = {
+
+const testConfig = {
 	mode: 'porduction',
 	module: {
+		// Настройка модулей
 		rules: [
+			// Правила для модулей (configure loaders, parser options, etc.)
 			{
 				test: /\.s?css$/,
 				use: ExtractTextPlugin.extract({
@@ -11,28 +14,20 @@ const buildConfig = {
 						{
 							loader: "css-loader",
 							options: {
-									sourceMap: false,
-									minimize: true
-							}
-						},
-						{
-							loader: 'postcss-loader',
-							options: {
-								plugins: () => [require('autoprefixer')({
-									'browsers': ['> 1%', 'last 2 versions']
-								})],
+									sourceMap: true,
+									// minimize: process.env.NODE_ENV != 'production' ? false : true
 							}
 						},
 						{
 							loader: "sass-loader",
 							options: {
-									sourceMap: false
+									sourceMap: true
 							}
 						}
 					]
 				})
 			},
 		]
-	},
+	}
 }
-module.exports = buildConfig;
+module.exports = testConfig;

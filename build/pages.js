@@ -13,7 +13,7 @@ let files = fs.readdirSync(config.rootPath, (err,data) => {
 // Масив страниц, имен страниц, точки входа проекта
 let pages = [];
 let pageNames = [];
-let entries = [];
+let entries = {};
 
 // // Фильтр html файлов
 files.map((file) => {
@@ -22,17 +22,18 @@ files.map((file) => {
 	}
 });
 pageNames.forEach(function(name) {
-  entries.push(path.resolve(config.rootPath, `entries`, `${name}.js`));
+  entries[name] = path.resolve(config.rootPath, `entries`, `${name}.js`);
 	pages.push(new HtmlWebpackPlugin({
 		title: `${name}`,
 		filename: path.resolve(config.rootPath, `dist/${name}.html`),
-		template: path.resolve(config.rootPath, `${name}.html`)
+		template: path.resolve(config.rootPath, `${name}.html`),
+		chunks: [ name, 'common' ]
 		// chunks: ['commons', name]
 	}))
 });
 
 // console.log(pages);
-// console.log(entries);
+console.log(entries);
 
 module.exports = {
 	pages : pages,

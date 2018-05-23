@@ -1,39 +1,78 @@
 // Системные модули
 const path = require('path');
 
-// Файлы конфигурации соблюдать очередность
-const pageslist = require('./pages'); // 1
-const config = require('./config'); // 2
+// Файлы конфигурации
+const pageslist = require('./pages');
+const config = require('./config');
 
 // plugins
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
-
+// pageslist.entries
 module.exports = {
 	context: config.rootPath,
-	entry: {
-		index: pageslist.entries[0],
-		search: pageslist.entries[1]
-	},
+	entry: pageslist.entries,
 
+	optimization: {
+		splitChunks: {
+			cacheGroups: {
+				commons: {
+						name: "common",
+						chunks: "all"
+					}
+				}
+		}
+	},
 	output: {
 		path: path.resolve(config.rootPath, 'dist'),
 		filename: 'bundles/[name].js',
 		publicPath: ''
 	},
 
-	optimization: {
-		splitChunks: {
-			cacheGroups: {
-				commons: {
-					name: "commons",
-					chunks: "initial",
-					minChunks: 2
+	resolve: {
+		alias: {
+			'__rootPath':	 	path.resolve(config.rootPath, ''),
+			'__store':			path.resolve(config.rootPath, 'src/store'),
+			'__components': path.resolve(config.rootPath, 'src/includes/components'),
+			'__assets':			path.resolve(config.rootPath, 'src/assets'),
+			'__scss':				path.resolve(config.rootPath, 'src/scss'),
+			'__libs':	 			path.resolve(config.rootPath, 'libs')
+		}
+	},
+
+	module: {
+		// Настройка модулей
+		rules: [
+			// Правила для модулей (configure loaders, parser options, etc.)
+			// Loader на css файлы лежит в индивидуальных конфигурациях
+			{
+				test: /\.js?$/,
+				loader: 'babel-loader',
+				exclude: /node_modules/,
+				options: {
+					presets: path.resolve(config.rootPath, '.babelrc')
+				}
+			},
+			{
+				test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+				loader: 'url-loader',
+				options: {
+					limit: 10000,
+					name: path.join('img', '[name].[hash:7].[ext]')
+				}
+			},
+			{
+				test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+				loader: 'url-loader',
+				options: {
+					limit: 10000,
+					name: path.join('fonts', '[name].[ext]')
 				}
 			}
-		}
+		]
 	},
 
 	plugins: [
@@ -55,16 +94,20 @@ module.exports = {
 				const error = errors[0];
 				console.log(error.webpackError);
 			}
-		})
+		}),
+		new ExtractTextPlugin(path.join('bundles','common.css')),
+
 
 	].concat(pageslist.pages),
 	// Вывод событий Webpack
+
+
 	stats: {
 		children: false,
 		entrypoints: false
 	},
 	// Лимит памяти точки входа
 	performance: {
-  	hints: false
+		hints: false
 	},
 }
