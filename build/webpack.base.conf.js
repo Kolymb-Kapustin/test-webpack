@@ -10,6 +10,7 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { VueLoaderPlugin } = require('vue-loader')
 
 // pageslist.entries
 module.exports = {
@@ -57,6 +58,16 @@ module.exports = {
 				}
 			},
 			{
+				test: /\.vue?$/,
+				loader: 'vue-loader'
+			},
+			{
+				enforce: 'pre',
+				test: /\.(js|vue)$/,
+				loader: 'eslint-loader',
+				exclude: /node_modules/
+			},
+			{
 				test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
 				loader: 'url-loader',
 				options: {
@@ -76,6 +87,7 @@ module.exports = {
 	},
 
 	plugins: [
+		new VueLoaderPlugin(),
 
 		new CleanWebpackPlugin([path.resolve(config.rootPath, 'dist/*')], {
 			verbose: true,
