@@ -10,7 +10,25 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const { VueLoaderPlugin } = require('vue-loader')
+const { VueLoaderPlugin } = require('vue-loader');
+const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+
+
+let folders_for_copying = ['img', 'fonts', 'api'];
+let fpfc = [
+	{
+		from: path.resolve(config.rootPath, `.tmp`),
+		to: path.resolve(config.rootPath, `dist/bundles`)
+	}
+];
+
+folders_for_copying.map(folder => {
+	fpfc.push({
+		from: path.resolve(config.rootPath, `src/${folder}`),
+		to: path.resolve(config.rootPath, `dist/${folder}`)
+	})
+})
 
 // pageslist.entries
 module.exports = {
@@ -29,18 +47,18 @@ module.exports = {
 	},
 	output: {
 		path: path.resolve(config.rootPath, 'dist'),
-		filename: 'bundles/[name].js',
-		publicPath: ''
+		publicPath: '',
+		filename: 'bundles/[name].js'
 	},
 
 	resolve: {
 		alias: {
-			'__rootPath':	 	path.resolve(config.rootPath, ''),
-			'__store':			path.resolve(config.rootPath, 'src/store'),
-			'__components': path.resolve(config.rootPath, 'src/includes/components'),
-			'__assets':			path.resolve(config.rootPath, 'src/assets'),
-			'__scss':				path.resolve(config.rootPath, 'src/scss'),
-			'__libs':	 			path.resolve(config.rootPath, 'libs')
+			'__components': path.join(config.rootPath, 'src/includes/components'),
+			'__assets': path.join(config.rootPath, 'src/assets'),
+			'__scss': path.join(config.rootPath, 'scss'),
+			'__styles': path.join(config.rootPath, 'src/styles'),
+			'__page': path.join(config.rootPath, ''),
+			'__libs': path.join(config.rootPath, 'libs')
 		}
 	},
 
@@ -62,12 +80,6 @@ module.exports = {
 				loader: 'vue-loader'
 			},
 			{
-				enforce: 'pre',
-				test: /\.(js|vue)$/,
-				loader: 'eslint-loader',
-				exclude: /node_modules/
-			},
-			{
 				test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
 				loader: 'url-loader',
 				options: {
@@ -80,16 +92,20 @@ module.exports = {
 				loader: 'url-loader',
 				options: {
 					limit: 10000,
-					name: path.join('fonts', '[name].[ext]')
+					name: path.join('fonts', '[name].[hash:7].[ext]')
 				}
-			}
+			},
+			// {
+			// 	test: /\.(png|jpg|gif|svg|woff2?|eot|ttf|otf)$/,
+			// 	loader: 'ignore-loader'
+			// }
 		]
 	},
 
 	plugins: [
 		new VueLoaderPlugin(),
 
-		new CleanWebpackPlugin([path.resolve(config.rootPath, 'dist/*')], {
+		new CleanWebpackPlugin([path.resolve(config.rootPath, 'dist/*'),path.resolve(config.rootPath, '.tmp/*'),path.resolve(config.rootPath, 'php/*')], {
 			verbose: true,
 			root: config.rootPath
 		}),
@@ -107,8 +123,21 @@ module.exports = {
 				console.log(error.webpackError);
 			}
 		}),
+
+		new webpack.NamedModulesPlugin(),
+
+
 		new ExtractTextPlugin(path.join('bundles','common.css')),
 
+		new webpack.ProvidePlugin({
+			$: "jquery",
+			jQuery: "jquery",
+			"window.jQuery": "jquery",
+			Vue: ['vue/dist/vue.esm.js', 'default']
+		}),
+
+		new CopyWebpackPlugin(fpfc ,
+		{copyUnmodified: true}),
 
 	].concat(pageslist.pages),
 	// Вывод событий Webpack

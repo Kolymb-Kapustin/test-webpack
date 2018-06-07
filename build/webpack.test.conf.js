@@ -1,4 +1,6 @@
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const config = require('./config');
+const path = require('path');
 
 
 const testConfig = {
@@ -15,17 +17,39 @@ const testConfig = {
 							loader: "css-loader",
 							options: {
 									sourceMap: true,
+									url: false
 									// minimize: process.env.NODE_ENV != 'production' ? false : true
 							}
 						},
 						{
 							loader: "sass-loader",
 							options: {
-									sourceMap: true
+								sourceMap: true
 							}
-						}
+						},
+						{
+							loader: 'alias-resolve-loader',
+							options: {
+								alias: {
+									"@material": "~@material"
+								}
+							}
+						},
 					]
 				})
+			},
+			{
+				test: /\.html$/,
+				use: [
+					{
+						loader: 'html-loader',
+						options: {
+							minimize: false,
+							interpolate: 'require',
+							attrs: ['require:url']
+						}
+					}
+				]
 			},
 		]
 	}

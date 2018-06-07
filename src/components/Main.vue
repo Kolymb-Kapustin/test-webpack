@@ -1,14 +1,14 @@
 <template>
-  <div class="example">{{ msg }}</div>
+	<div class="example">{{ msg }}</div>
 </template>
 
 <script>
 export default {
-  data () {
-    return {
-      msg: 'Hello world!'
-    }
-  }
+	data () {
+		return {
+			msg: 'Hello world!'
+		}
+	}
 }
 </script>
 
@@ -16,7 +16,7 @@ export default {
 body{
 	background: wheat;
 	.example {
-	  color: red;
+			color: red;
 	}
 }
 

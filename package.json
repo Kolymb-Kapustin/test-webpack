@@ -1,20 +1,24 @@
 {
-  "name": "qweqweqweq",
+  "name": "qweqweq",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
+	"scripts": {
     "start": "npm run build",
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --mode development --config build/_webpack.config.js",
-    "build": "cross-env NODE_ENV=production webpack --mode production --config build/_webpack.config.js",
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --mode development --config build/_webpack.config.js --open",
+    "build": "cross-env NODE_ENV=denwer webpack --mode production --config build/_webpack.config.js",
+    "simple": "cross-env NODE_ENV=simple_build webpack --mode production --config build/_webpack.config.js",
     "test": "cross-env NODE_ENV=test webpack --mode production --config build/_webpack.config.js"
   },
   "author": "kap_nik",
   "license": "MIT",
-  "devDependencies": {
+	"devDependencies": {
+    "27ua-backendtree-webpack-plugin-brezitsky": "0.0.1",
+    "alias-resolve-loader": "^2.0.4",
     "autoprefixer": "^8.5.0",
     "babel-loader": "^7.1.4",
     "clean-webpack-plugin": "^0.1.19",
+    "copy-webpack-plugin": "^4.5.1",
     "cross-env": "^5.1.5",
     "css-loader": "^0.28.11",
     "cssnano": "^3.10.0",
@@ -23,10 +27,15 @@
     "eslint-plugin-vue": "^4.5.0",
     "eslintrc": "^1.0.6",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "fancybox": "^3.0.1",
     "file-loader": "^1.1.11",
     "friendly-errors-webpack-plugin": "^1.7.0",
     "fs-extra": "^6.0.1",
+    "html-component-loader": "^1.3.2",
+    "html-loader": "^0.5.5",
     "html-webpack-plugin": "^3.2.0",
+    "ignore-loader": "^0.1.2",
+    "inputmask": "^4.0.0",
     "jquery": "^3.3.1",
     "node-notifier": "^5.2.1",
     "node-sass": "^4.9.0",
@@ -35,6 +44,7 @@
     "postcss-loader": "^2.1.5",
     "postcss-smart-import": "^0.7.6",
     "precss": "^3.1.2",
+    "pretty": "^2.0.0",
     "sass-loader": "^7.0.1",
     "style-loader": "^0.21.0",
     "url-loader": "^1.0.1",
@@ -45,6 +55,7 @@
     "webpack": "^4.8.3",
     "webpack-cli": "^2.1.3",
     "webpack-dev-server": "^3.1.4",
-    "webpack-merge": "^4.1.2"
+    "webpack-merge": "^4.1.2",
+		"material-components-web": "^0.35.2"
   }
 }

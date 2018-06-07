@@ -12,7 +12,8 @@ const buildConfig = {
 							loader: "css-loader",
 							options: {
 									sourceMap: false,
-									minimize: true
+									minimize: true,
+									url: false
 							}
 						},
 						{
@@ -26,11 +27,38 @@ const buildConfig = {
 						{
 							loader: "sass-loader",
 							options: {
-									sourceMap: false
+								sourceMap: false,
+								importer: function(url, prev) {
+									if(url.indexOf('@material') === 0) {
+										var filePath = url.split('@material')[1];
+										var nodeModulePath = './node_modules/@material/' + filePath;
+										return { file: require('path').resolve(nodeModulePath) };
+									}
+
+									if(url.indexOf('material-components-web') === 0) {
+										var nodeModulePath = './node_modules/material-components-web/material-components-web';
+										return { file: require('path').resolve(nodeModulePath) };
+									}
+
+									return { file: url };
+								}
 							}
 						}
 					]
 				})
+			},
+			{
+				test: /\.html$/,
+				use: [
+					{
+						loader: 'html-loader',
+						options: {
+							minimize: false,
+							interpolate: 'require',
+							attrs: ['require:url']
+						}
+					}
+				]
 			},
 		]
 	},
